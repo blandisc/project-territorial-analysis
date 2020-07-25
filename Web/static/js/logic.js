@@ -141,3 +141,27 @@ legend.addTo(mymap);
 //   });
 
 // let marker = L.marker([19.4296549,-99.2467057], {icon: redMarker}).addTo(mymap);
+
+// Alternative way (only inserts markers)
+// d3.json(url).then(response=>{
+    
+//     let earthquakes = response.features
+    
+//     let earthquakeMarkers = []
+
+//     for (let i = 0; i < earthquakes.length; i++) {
+        
+//         let earthquake = earthquakes[i]
+
+//         // console.log(earthquake[index])
+
+//        let earthquakeMarker = L.marker([earthquake.geometry.coordinates[1], earthquake.geometry.coordinates[0]])
+//                                 .bindPopup("<h3>Name: <h3>" + earthquake.properties.name + "<h3> Magnitude: </h3>" + earthquake.properties.mag).addTo(mymap)
+//                                 .addTo(mymap)
+
+//         earthquakeMarkers.push(earthquakeMarker)
+
+//     }
+
+//     // console.log(earthquakeMarkers)
+// })
