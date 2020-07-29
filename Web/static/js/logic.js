@@ -1,9 +1,25 @@
 // create variable mymap
-let mymap = L.map('map').setView([19.4296549,-99.2467057], 13);
+// let mymap = L.map('map').setView([19.4296549,-99.2467057], 13);
 
+// Layers
+let layers = {
+    CITI: new L.LayerGroup(),
+    BBVA: new L.LayerGroup(),
+    SANTANDER: new L.LayerGroup(),
+}
+
+var mymap = L.map("map", {
+    center: [19.4296549,-99.2467057],
+    zoom: 13,
+    layers: [
+      layers.CITI,
+      layers.BBVA,
+      layers.SANTANDER,
+    ]
+  });
 
 // Create the tile layer that will be the background of our map
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let lightmap = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     id: 'mapbox/light-v10',
@@ -14,8 +30,7 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 let geoData = "./static/Data/geoJSON/master_geojson (1).geojson"
 
-
-// Grab data with D#
+// Grab data with D3 - Manzanas
 d3.json(geoData).then(data=>{
 
 // control that shows state info on hover
@@ -28,8 +43,14 @@ d3.json(geoData).then(data=>{
     };
     
     info.update = function (props) {
-        this._div.innerHTML = '<h4>Manzanas de Miguel Hidalgo</h4>' +  (props ?
-            '<b>' + 'Número de manzana: ' + props.mza + '</b><br />' + 'Poblacion de ' + props.pobtot + ' habitantes'
+        this._div.innerHTML =   (props ?
+            '<h4>Manzanas de ' + props.nom_mun + '</h4>' +
+            '<b>' + 'Número de AGEB: ' + props.ageb +
+            '<br />' +
+            'MZA: '+ props.mza + '</b>' +
+            '<br />' + 
+            'Poblacion de ' + props.pobtot + ' habitantes'
+            + '<br />' + 'Puntuación: ' + props.score
             : 'Coloca el cursor sobre una manzana');
     };
     
@@ -37,13 +58,13 @@ d3.json(geoData).then(data=>{
 
 // get color depending on population density value
     function getColor(data) {
-        return     data > 500  ? '#08589e' :
-                   data > 200  ? '#2b8cbe' :
-                   data > 100  ? '#4eb3d3' :
-                   data > 50   ? '#7bccc4' :
-                   data > 20   ? '#a8ddb5' :
-                   data > 10   ? '#ccebc5' :
-                              '#f0f9e8';
+        return     data > 9  ? '#08589e' :
+                   data > 8  ? '#2b8cbe' :
+                   data > 7  ? '#4eb3d3' :
+                   data > 6   ? '#7bccc4' :
+                   data > 5   ? '#a8ddb5' :
+                   data > 4   ? '#ccebc5' :
+                              '#f7fcf0';
         }
 
 
@@ -54,7 +75,7 @@ function style(feature) {
         color: 'white',
         dashArray: '3',
         fillOpacity: 0.7,
-        fillColor: getColor(feature.properties.pobtot)
+        fillColor: getColor(feature.properties.score)
     };
 }
 
@@ -91,7 +112,7 @@ function onEachFeature(feature, layer) {
     layer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
-        click: zoomToFeature
+        // click: zoomToFeature
     });
 }
 
@@ -107,7 +128,7 @@ let legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
 
     let div = L.DomUtil.create('div', 'info legend'),
-        grades = [0, 10, 20, 50, 100, 200, 500],
+        grades = [0, 4, 5, 6, 7, 8, 9],
         labels = [],
         from, to;
 
@@ -124,23 +145,122 @@ legend.onAdd = function (map) {
     return div;
 };
 
-legend.addTo(mymap);
-
-
+    legend.addTo(mymap);
 
 })
 
-// // let marker = L.marker([19.4296549,-99.2467057]).addTo(mymap);
+// Add our 'lightmap' tile layer to the map
+lightmap.addTo(mymap);
 
-// //   Creates a red marker with the coffee icon
+
+// Create an overlays object to add to the layer control
+let overlays = {
+    "Citi Banamex": layers.CITI,
+    "BBVA": layers.BBVA,
+    "Santander": layers.SANTANDER,
+  };
+
+// Create a control for our layers, add our overlay layers to it
+L.control.layers(null, overlays).addTo(mymap);
+
+
+let icons = {
+    CITI : L.icon({
+        iconUrl: './static/assets/citi.png',
+        markerColor: 'red',
+        iconSize:  [28, 28],
+      }),
+    BBVA : L.icon({
+        iconUrl: './static/assets/bbva.png',
+        markerColor: 'red',
+        iconSize:  [28, 28],
+      }),
+    SANTANDER : L.icon({
+        iconUrl: './static/assets/santander.png',
+        markerColor: 'red',
+        iconSize:  [28, 28],
+      }),
+}
+
+
+// urlINEGI = "https://www.inegi.org.mx/app/api/denue/v1/consulta/BuscarAreaAct/09/016/0/0/0/0/0/0/522110/0/1/0/ac054ffa-9a27-4200-9e5e-91b6c292b82d"
+
+// d3.csv("").then(data =>{
+
+// let bank = xxxxxx
+
+
+// var banksCount = {
+//     CITI: 0,
+//     BBVA: 0,
+//     SANTANDER: 0
+//   };
+
+//   // Initialize a stationStatusCode, which will be used as a key to access the appropriate layers, icons, and station count for layer group
+// //   var stationStatusCode;
+
+//   // Loop through the stations (they're the same size and have partially matching data)
+//   for (var i = 0; i < stationInfo.length; i++) {
+
+//     // Create a new station object with properties of both station objects
+//     var station = Object.assign({}, stationInfo[i], stationStatus[i]);
+//     // If a station is listed but not installed, it's coming soon
+//     if (!station.is_installed) {
+//       stationStatusCode = "COMING_SOON";
+//     }
+//     // If a station has no bikes available, it's empty
+//     else if (!station.num_bikes_available) {
+//       stationStatusCode = "EMPTY";
+//     }
+//     // If a station is installed but isn't renting, it's out of order
+//     else if (station.is_installed && !station.is_renting) {
+//       stationStatusCode = "OUT_OF_ORDER";
+//     }
+//     // If a station has less than 5 bikes, it's status is low
+//     else if (station.num_bikes_available < 5) {
+//       stationStatusCode = "LOW";
+//     }
+//     // Otherwise the station is normal
+//     else {
+//       stationStatusCode = "NORMAL";
+//     }
+
+//     // Update the station count
+//     stationCount[stationStatusCode]++;
+//     // Create a new marker with the appropriate icon and coordinates
+//     var newMarker = L.marker([station.lat, station.lon], {
+//       icon: icons[stationStatusCode]
+//     });
+
+//     // Add the new marker to the appropriate layer
+//     newMarker.addTo(layers[stationStatusCode]);
+
+//     // Bind a popup to the marker that will  display on click. This will be rendered as HTML
+//     newMarker.bindPopup(station.name + "<br> Banco: " + station.capacity + "<br>");
+//   }
+
+//   // Call the updateLegend function, which will... update the legend!
+//   updateLegend(updatedAt, stationCount);
+// });
+
+// let marker = L.marker([19.4296549,-99.2467057]).addTo(mymap);
+
+//   Creates a red marker with the coffee icon
 //   let redMarker = L.ExtraMarkers.icon({
-//     icon: 'ion-android-bicycle',
+//     icon: 'ion-cash',
 //     markerColor: 'red',
 //     shape: 'square',
 //     prefix: 'fa'
 //   });
 
-// let marker = L.marker([19.4296549,-99.2467057], {icon: redMarker}).addTo(mymap);
+let CITI = L.icon({
+    iconUrl: './static/assets/santander.png',
+    markerColor: 'red',
+    iconSize:  [28, 28],
+  })
+
+let marker = L.marker([19.4296549,-99.2467057], {icon: CITI}).addTo(mymap);
+
 
 // Alternative way (only inserts markers)
 // d3.json(url).then(response=>{
