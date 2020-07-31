@@ -25,7 +25,7 @@ let lightmap = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/
     accessToken: apiKey
 }).addTo(mymap);
 
-let geoData = "./static/Data/geoJSON/master_geojson (1).geojson"
+let geoData = "./static/Data/master_geojson.geojson"
 
 // Grab data with D3 - Manzanas
 d3.json(geoData).then(data=>{
