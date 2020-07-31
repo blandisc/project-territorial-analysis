@@ -223,6 +223,8 @@ d3.json(bankJSON).then(data =>{
         
     })
     
+    // + " " + (bankCount.BBVA / (bankCount.BBVA + bankCount.SANTANDER + bankCount.CITI) *100)
+
     function updateLegend(data) {
         let fechaActual = new Date()
         document.querySelector(".legend").innerHTML = [
@@ -230,7 +232,7 @@ d3.json(bankJSON).then(data =>{
             "<p>Número de Sucursales </p>",
             "<p> BBVA: " + bankCount.BBVA + "</p>",
             "<p> Santander: " + bankCount.SANTANDER + "</p>",
-            "<p> CITI: " + bankCount.CITI + "</p>",
+            "<p> CitiBanamex: " + bankCount.CITI + "</p>",
         ].join("");
     }
     updateLegend()
