@@ -6,7 +6,7 @@ let layers = {
 }
 
 let mymap = L.map("map", {
-    center: [19.3970079,-99.2065711],
+    center: [19.3734242,-99.2153144],
     zoom: 13,
     layers: [
       layers.CITI,
