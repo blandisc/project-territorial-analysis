@@ -1,6 +1,3 @@
-// create variable mymap
-// let mymap = L.map('map').setView([19.4296549,-99.2467057], 13);
-
 // Layers
 let layers = {
     CITI: new L.LayerGroup(),
@@ -9,7 +6,7 @@ let layers = {
 }
 
 let mymap = L.map("map", {
-    center: [19.4296549,-99.2467057],
+    center: [19.3970079,-99.2065711],
     zoom: 13,
     layers: [
       layers.CITI,
@@ -28,7 +25,7 @@ let lightmap = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/
     accessToken: apiKey
 }).addTo(mymap);
 
-let geoData = "./static/Data/geoJSON/master_geojson.geojson"
+let geoData = "./static/Data/geoJSON/master_geojson (1).geojson"
 
 // Grab data with D3 - Manzanas
 d3.json(geoData).then(data=>{
@@ -167,89 +164,74 @@ L.control.layers(null, overlays).addTo(mymap);
 let icons = {
     CITI : L.icon({
         iconUrl: './static/assets/citi.png',
-        markerColor: 'red',
+        // markerColor: 'red',
         iconSize:  [28, 28],
       }),
     BBVA : L.icon({
         iconUrl: './static/assets/bbva.png',
-        markerColor: 'red',
+        // markerColor: 'red',
         iconSize:  [28, 28],
       }),
     SANTANDER : L.icon({
         iconUrl: './static/assets/santander.png',
-        markerColor: 'red',
+        // markerColor: 'red',
         iconSize:  [28, 28],
       }),
 }
 
+let numberBanks = L.control({
+    position: "bottomleft"
+});
+
+numberBanks.onAdd = function() {
+    var div = L.DomUtil.create("div", "numberBanks legend");
+    return div;
+};
+
+numberBanks.addTo(mymap);
 
 let bankJSON = "./static/Data/data.json"
 
 d3.json(bankJSON).then(data =>{
-    console.log(data)
+    // console.log(data)
+
+    let bankCount = {
+        CITI: 0,
+        BBVA: 0,
+        SANTANDER: 0
+    };
+
+    data.forEach(d => {
+        if (d.bank_name === "Banamex") {
+            let newMarker = L.marker([d.lat, d.long], {icon: icons["CITI"]})
+            newMarker.bindPopup("Banco: " + d.bank_name)
+            newMarker.addTo(layers["CITI"])
+            bankCount.CITI++
+        }
+        if (d.bank_name === "Santander") {
+            let newMarker = L.marker([d.lat, d.long], {icon: icons["SANTANDER"]})
+            newMarker.bindPopup("Banco: " + d.bank_name)
+            newMarker.addTo(layers["SANTANDER"])
+            bankCount.SANTANDER++
+        }
+        if (d.bank_name === "BBVA Bancomer") {
+            let newMarker = L.marker([d.lat, d.long], {icon: icons["BBVA"]})
+            newMarker.bindPopup("Banco: " + d.bank_name)
+            newMarker.addTo(layers["BBVA"])
+            bankCount.BBVA++
+        }
+        
+    })
+    
+    function updateLegend(data) {
+        let fechaActual = new Date()
+        document.querySelector(".legend").innerHTML = [
+            "<p>Updated: " + fechaActual.toDateString() + "</p>",
+            "<p>Número de Sucursales </p>",
+            "<p> BBVA: " + bankCount.BBVA + "</p>",
+            "<p> Santander: " + bankCount.SANTANDER + "</p>",
+            "<p> CITI: " + bankCount.CITI + "</p>",
+        ].join("");
+    }
+    updateLegend()
 })
-// Extract bank related info
-// d3.json("").then(data =>{
-
-// let bankInfo = data.bank
-
-
-// let bankCount = {
-//     CITI: 0,
-//     BBVA: 0,
-//     SANTANDER: 0
-//   };
-
-//   // Initialize a stationStatusCode, which will be used as a key to access the appropriate layers, icons, and station count for layer group
-//   let typeofBank;
-
-//   // Loop through the bank
-//   for (let i = 0; i < bankInfo.length; i++) {
-
-//     // Create a new station object with properties of both station objects
-//     let banks = Object.assign({},  bankName[i]);
-
-
-//     if (bank.name === "BBVA" || bank.name === "BBVA SA de CV") {
-//         typeofBank = "BBVA";
-//     }
-
-//     else if (bank.name === "CITI") {
-//         typeofBank = "CITI";
-//     }
-
-//     // Otherwise the station is normal
-//     else {
-//         typeofBank = "SANTANDER";
-//     }
-
-//     // Update the station count
-//     bankCount[typeofBank]++;
-
-//     // Create a new marker with the appropriate icon and coordinates
-//     let newMarker = L.marker([bank.lat, bank.lon], {
-//       icon: icons[typeofBank]
-//     });
-
-//     // Add the new marker to the appropriate layer
-//     newMarker.addTo(layers[typeofBank]);
-
-//     // Bind a popup to the marker that will  display on click. This will be rendered as HTML
-//     newMarker.bindPopup("<br> Banco: " + data.name + "<br>");
-//   }
-
-//   // Call the updateLegend function, which will... update the legend!
-// //   updateLegend(updatedAt, bankCount);
-// });
-
-
-//   Creates a red marker with the coffee icon
-
-let CITI = L.icon({
-    iconUrl: './static/assets/santander.png',
-    markerColor: 'red',
-    iconSize:  [28, 28],
-  })
-
-let marker = L.marker([19.4296549,-99.2467057], {icon: CITI}).addTo(mymap);
-
