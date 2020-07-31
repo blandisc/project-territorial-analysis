@@ -8,7 +8,7 @@ let layers = {
     SANTANDER: new L.LayerGroup(),
 }
 
-var mymap = L.map("map", {
+let mymap = L.map("map", {
     center: [19.4296549,-99.2467057],
     zoom: 13,
     layers: [
@@ -28,7 +28,7 @@ let lightmap = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/
     accessToken: apiKey
 }).addTo(mymap);
 
-let geoData = "./static/Data/geoJSON/master_geojson (1).geojson"
+let geoData = "./static/Data/geoJSON/master_geojson.geojson"
 
 // Grab data with D3 - Manzanas
 d3.json(geoData).then(data=>{
@@ -45,7 +45,7 @@ d3.json(geoData).then(data=>{
     info.update = function (props) {
         this._div.innerHTML =   (props ?
             '<h4>Manzanas de ' + props.nom_mun + '</h4>' +
-            '<b>' + 'Número de AGEB: ' + props.ageb +
+            '<b>' + 'AGEB: ' + props.ageb +
             '<br />' +
             'MZA: '+ props.mza + '</b>' +
             '<br />' + 
@@ -163,7 +163,7 @@ let overlays = {
 // Create a control for our layers, add our overlay layers to it
 L.control.layers(null, overlays).addTo(mymap);
 
-
+// Create icons for each one of our banks
 let icons = {
     CITI : L.icon({
         iconUrl: './static/assets/citi.png',
@@ -183,75 +183,67 @@ let icons = {
 }
 
 
-// urlINEGI = "https://www.inegi.org.mx/app/api/denue/v1/consulta/BuscarAreaAct/09/016/0/0/0/0/0/0/522110/0/1/0/ac054ffa-9a27-4200-9e5e-91b6c292b82d"
+let bankJSON = "./static/Data/data.json"
 
-// d3.csv("").then(data =>{
+d3.json(bankJSON).then(data =>{
+    console.log(data)
+})
+// Extract bank related info
+// d3.json("").then(data =>{
 
-// let bank = xxxxxx
+// let bankInfo = data.bank
 
 
-// var banksCount = {
+// let bankCount = {
 //     CITI: 0,
 //     BBVA: 0,
 //     SANTANDER: 0
 //   };
 
 //   // Initialize a stationStatusCode, which will be used as a key to access the appropriate layers, icons, and station count for layer group
-// //   var stationStatusCode;
+//   let typeofBank;
 
-//   // Loop through the stations (they're the same size and have partially matching data)
-//   for (var i = 0; i < stationInfo.length; i++) {
+//   // Loop through the bank
+//   for (let i = 0; i < bankInfo.length; i++) {
 
 //     // Create a new station object with properties of both station objects
-//     var station = Object.assign({}, stationInfo[i], stationStatus[i]);
-//     // If a station is listed but not installed, it's coming soon
-//     if (!station.is_installed) {
-//       stationStatusCode = "COMING_SOON";
+//     let banks = Object.assign({},  bankName[i]);
+
+
+//     if (bank.name === "BBVA" || bank.name === "BBVA SA de CV") {
+//         typeofBank = "BBVA";
 //     }
-//     // If a station has no bikes available, it's empty
-//     else if (!station.num_bikes_available) {
-//       stationStatusCode = "EMPTY";
+
+//     else if (bank.name === "CITI") {
+//         typeofBank = "CITI";
 //     }
-//     // If a station is installed but isn't renting, it's out of order
-//     else if (station.is_installed && !station.is_renting) {
-//       stationStatusCode = "OUT_OF_ORDER";
-//     }
-//     // If a station has less than 5 bikes, it's status is low
-//     else if (station.num_bikes_available < 5) {
-//       stationStatusCode = "LOW";
-//     }
+
 //     // Otherwise the station is normal
 //     else {
-//       stationStatusCode = "NORMAL";
+//         typeofBank = "SANTANDER";
 //     }
 
 //     // Update the station count
-//     stationCount[stationStatusCode]++;
+//     bankCount[typeofBank]++;
+
 //     // Create a new marker with the appropriate icon and coordinates
-//     var newMarker = L.marker([station.lat, station.lon], {
-//       icon: icons[stationStatusCode]
+//     let newMarker = L.marker([bank.lat, bank.lon], {
+//       icon: icons[typeofBank]
 //     });
 
 //     // Add the new marker to the appropriate layer
-//     newMarker.addTo(layers[stationStatusCode]);
+//     newMarker.addTo(layers[typeofBank]);
 
 //     // Bind a popup to the marker that will  display on click. This will be rendered as HTML
-//     newMarker.bindPopup(station.name + "<br> Banco: " + station.capacity + "<br>");
+//     newMarker.bindPopup("<br> Banco: " + data.name + "<br>");
 //   }
 
 //   // Call the updateLegend function, which will... update the legend!
-//   updateLegend(updatedAt, stationCount);
+// //   updateLegend(updatedAt, bankCount);
 // });
 
-// let marker = L.marker([19.4296549,-99.2467057]).addTo(mymap);
 
 //   Creates a red marker with the coffee icon
-//   let redMarker = L.ExtraMarkers.icon({
-//     icon: 'ion-cash',
-//     markerColor: 'red',
-//     shape: 'square',
-//     prefix: 'fa'
-//   });
 
 let CITI = L.icon({
     iconUrl: './static/assets/santander.png',
@@ -261,27 +253,3 @@ let CITI = L.icon({
 
 let marker = L.marker([19.4296549,-99.2467057], {icon: CITI}).addTo(mymap);
 
-
-// Alternative way (only inserts markers)
-// d3.json(url).then(response=>{
-    
-//     let earthquakes = response.features
-    
-//     let earthquakeMarkers = []
-
-//     for (let i = 0; i < earthquakes.length; i++) {
-        
-//         let earthquake = earthquakes[i]
-
-//         // console.log(earthquake[index])
-
-//        let earthquakeMarker = L.marker([earthquake.geometry.coordinates[1], earthquake.geometry.coordinates[0]])
-//                                 .bindPopup("<h3>Name: <h3>" + earthquake.properties.name + "<h3> Magnitude: </h3>" + earthquake.properties.mag).addTo(mymap)
-//                                 .addTo(mymap)
-
-//         earthquakeMarkers.push(earthquakeMarker)
-
-//     }
-
-//     // console.log(earthquakeMarkers)
-// })
