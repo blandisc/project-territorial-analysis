@@ -41,14 +41,14 @@ d3.json(geoData).then(data=>{
     
     info.update = function (props) {
         this._div.innerHTML =   (props ?
-            '<h4>Manzanas de ' + props.nom_mun + '</h4>' +
-            '<b>' + 'AGEB: ' + props.ageb +
+            '<h4>Borough: ' + props.nom_mun + '</h4>' +
+            'AGEB: ' + props.ageb +
             '<br />' +
-            'MZA: '+ props.mza + '</b>' +
+            'Block Number: '+ props.mza +
             '<br />' + 
-            'Poblacion de ' + props.pobtot + ' habitantes'
-            + '<br />' + 'Puntuación: ' + props.score
-            : 'Coloca el cursor sobre una manzana');
+            'Number of inhabitants: ' + props.pobtot
+            + '<br />' + 'Socioeconomic Score: ' + props.score
+            : 'Hover over a block');
     };
     
     info.addTo(mymap);
@@ -118,7 +118,7 @@ geojson = L.geoJson(data, {
     onEachFeature: onEachFeature
 }).addTo(mymap);
 
-mymap.attributionControl.addAttribution('Datos de Poblacion &copy; <a href="http://inegi.gov/">INEGI Censo 2010</a>');
+mymap.attributionControl.addAttribution('Population Data &copy; <a href="http://inegi.gov/">INEGI Census 2010</a>');
 
 let legend = L.control({position: 'bottomright'});
 
@@ -184,7 +184,7 @@ let numberBanks = L.control({
 });
 
 numberBanks.onAdd = function() {
-    var div = L.DomUtil.create("div", "numberBanks legend");
+    var div = L.DomUtil.create("div", "legend numberBanks");
     return div;
 };
 
@@ -204,19 +204,19 @@ d3.json(bankJSON).then(data =>{
     data.forEach(d => {
         if (d.bank_name === "Banamex") {
             let newMarker = L.marker([d.lat, d.long], {icon: icons["CITI"]})
-            newMarker.bindPopup("Banco: " + d.bank_name)
+            newMarker.bindPopup("Bank: " + d.bank_name)
             newMarker.addTo(layers["CITI"])
             bankCount.CITI++
         }
         if (d.bank_name === "Santander") {
             let newMarker = L.marker([d.lat, d.long], {icon: icons["SANTANDER"]})
-            newMarker.bindPopup("Banco: " + d.bank_name)
+            newMarker.bindPopup("Bank: " + d.bank_name)
             newMarker.addTo(layers["SANTANDER"])
             bankCount.SANTANDER++
         }
         if (d.bank_name === "BBVA Bancomer") {
             let newMarker = L.marker([d.lat, d.long], {icon: icons["BBVA"]})
-            newMarker.bindPopup("Banco: " + d.bank_name)
+            newMarker.bindPopup("Bank: " + d.bank_name)
             newMarker.addTo(layers["BBVA"])
             bankCount.BBVA++
         }
@@ -228,11 +228,11 @@ d3.json(bankJSON).then(data =>{
     function updateLegend(data) {
         let fechaActual = new Date()
         document.querySelector(".legend").innerHTML = [
-            "<p>Updated: " + fechaActual.toDateString() + "</p>",
-            "<p>Número de Sucursales </p>",
-            "<p> BBVA: " + bankCount.BBVA + "</p>",
-            "<p> Santander: " + bankCount.SANTANDER + "</p>",
-            "<p> CitiBanamex: " + bankCount.CITI + "</p>",
+            "<b>Updated</b>: " + fechaActual.toDateString(),
+            "<p>Number of Branches </p>",
+            "<b> BBVA: </b> " + bankCount.BBVA + "</p>",
+            "<p> <b>Santander</b>: " + bankCount.SANTANDER + "</p>",
+            "<p> <b>CitiBanamex</b>: " + bankCount.CITI + "</p>",
         ].join("");
     }
     updateLegend()
