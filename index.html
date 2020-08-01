@@ -42,25 +42,35 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item active">
         <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="static/Python/geoJSON.html">GeoJSON Code</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="static/Python/sql_database.html">SQL Code</a>
-      </li>
-      <!-- <li class="nav-item dropdown">
+      <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Data
+          Bank Data Transformation
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="static/Data/data.json">geoJson</a> -->
-     
+          <!-- <a class="dropdown-item" href="static/Python/bank_data_raw.html">Bank Data Raw</a> -->
+          <a class="dropdown-item" href="static/templates/sql_database.html">Transformation - Code</a>
+          <a class="dropdown-item" href="static/Data/data.json">Final</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Population Data Transformation
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <!-- <a class="dropdown-item" href="static/Python/bank_data_raw.html">Bank Data Raw</a> -->
+          <a class="dropdown-item" href="static/templates/geoJSON.html">Transformation - Code</a>
+          <a class="dropdown-item" href="static/Data/master_geojson.geojson">Final</a>
         </div>
       </li>
     </ul>
   </div>
 </nav>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
   <!-- The div that holds our map -->
   <div id="map"></div>
 
@@ -87,7 +97,9 @@
   <!-- Our JavaScript -->
   <script type="text/javascript" src="static/js/logic.js"></script>
 
-
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
 </body>
 
